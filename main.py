@@ -122,13 +122,15 @@ class Player:
         self.my_board = my_board
         self.en_board = enemy_board
 
+    @property
     def ask(self):
         raise NotImplementedError()
 
+    @property
     def move(self):
         while True:
             try:
-                target = self.ask()
+                target = self.ask
                 repeat = self.en_board.shoot(target)
                 return repeat
             except BoardException as e:
@@ -136,6 +138,7 @@ class Player:
 
 
 class AI(Player):
+    @property
     def ask(self):
         cords = (randint(1, 6), randint(1, 6))
         print(f'{BColors.OKCYAN}'
@@ -146,6 +149,7 @@ class AI(Player):
 
 
 class User(Player):
+    @property
     def ask(self):
         while True:
             cords_inp = input(f'{BColors.OKCYAN}Ваш ход: {BColors.ENDC}')
@@ -189,13 +193,14 @@ class User(Player):
 class Game:
     def __init__(self, size=6):
         self.size = size
-        player = self.random_board()
-        computer = self.random_board()
+        player = self.random_board
+        computer = self.random_board
         computer.hidden = True
 
         self.ai = AI(computer, player)
         self.us = User(player, computer)
 
+    @property
     def try_board(self):
         ship_lens = [3, 2, 2, 2, 1, 1, 1]
         board = Board(size=self.size)
@@ -219,10 +224,11 @@ class Game:
         board.init_game()
         return board
 
+    @property
     def random_board(self):
         board = None
         while board is None:
-            board = self.try_board()
+            board = self.try_board
         return board
 
     def print_boards(self, hidden):
@@ -285,10 +291,10 @@ class Game:
 
             if num % 2:
                 print(f'{BColors.WARNING}Ход игрока...{BColors.ENDC}')
-                repeat = self.us.move()
+                repeat = self.us.move
             else:
                 print(f'{BColors.WARNING}Ход компьютера...{BColors.ENDC}')
-                repeat = self.ai.move()
+                repeat = self.ai.move
             if repeat:
                 num -= 1
 
