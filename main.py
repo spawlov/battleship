@@ -1,3 +1,5 @@
+from random import randint
+
 import numpy as np
 
 from colors import BColors
@@ -51,15 +53,6 @@ class Board:
             board[0][0] = ' '
         self.board = board
 
-    @staticmethod
-    def cords_conv(cords: tuple, reverse: bool = False) -> tuple:
-        cord_letter = ord(cords[0].upper()) - 64
-        cord_number = int(cords[1])
-        if reverse:
-            return cord_letter, cord_number
-        else:
-            return cord_number, cord_letter
-
     def dot_out(self, dots: tuple):
         return not all(
             [1 <= dots[0] <= self.board_size, 1 <= dots[1] <= self.board_size]
@@ -88,7 +81,6 @@ class Board:
         self.ship_contour(ship)
 
     def shoot(self, dot: tuple) -> bool:
-        dot = self.cords_conv(dot, True)
         if self.dot_out(dot):
             raise BoardOutException()
         if dot in self.dots_busy:
@@ -138,6 +130,57 @@ class Player:
                 return repeat
             except BoardException as e:
                 print(e)
+
+
+class AI(Player):
+    def ask(self):
+        cords = (randint(1, 6), randint(1, 6))
+        print(f'{BColors.OKCYAN}'
+              f'Ход компьютера: {chr(cords[0] + 64)}{cords[1]}'
+              f'{BColors.ENDC}'
+              )
+        return cords
+
+
+class User(Player):
+    def ask(self):
+        while True:
+            cords_inp = input(f'{BColors.OKCYAN}Ваш ход: {BColors.ENDC}')
+
+            if len(cords_inp) != 2:
+                print(f'{BColors.FAIL}'
+                      f'Первый символ координат - латинская буква '
+                      f'от "{chr(65)}" до '
+                      f'"{chr(64 + self.my_board.board_size)}" '
+                      f'в любом регистре\n'
+                      f'Второй символ координат - число от 1 до '
+                      f'{self.my_board.board_size}'
+                      f'{BColors.ENDC}'
+                      )
+                continue
+
+            if not any(
+                    [65 <= ord(cords_inp[0]) < 65 + self.my_board.board_size,
+                     97 <= ord(cords_inp[0]) < 97 + self.my_board.board_size]
+            ):
+                print(f'{BColors.FAIL}'
+                      f'Первый символ - латинская буква '
+                      f'от "{chr(65)}" до '
+                      f'"{chr(64 + self.my_board.board_size)}" '
+                      f'в любом регистре'
+                      f'{BColors.ENDC}'
+                      )
+                continue
+
+            if not 49 <= ord(cords_inp[1]) <= 49 + self.my_board.board_size:
+                print(f'{BColors.FAIL}'
+                      f'Второй символ должен быть числом от 1 до '
+                      f'{self.my_board.board_size}'
+                      f'{BColors.ENDC}'
+                      )
+                continue
+            cords = ord(cords_inp[0].upper()) - 64, int(cords_inp[1])
+            return cords
 
 
 if __name__ == '__main__':
