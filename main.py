@@ -35,6 +35,12 @@ class Ship:
 
 
 class Board:
+    ship_img = BColors.HEADER + chr(9632) + BColors.ENDC
+    contour_img = BColors.OKGREEN + chr(8226) + BColors.ENDC
+    wave_img = BColors.OKBLUE + chr(8776) + BColors.ENDC
+    shoot_img = BColors.WARNING + '*' + BColors.ENDC
+    damage_img = BColors.FAIL + 'x' + BColors.ENDC
+
     def __init__(self, hidden: bool = False, size: int = 6):
         self.hidden = hidden
         self.board_size = size
@@ -42,9 +48,8 @@ class Board:
         self.ships = []
         self.count = 0
 
-        filler = BColors.OKBLUE + chr(8776) + BColors.ENDC
         board = np.array(
-            [[filler] * (self.board_size + 1)] * (self.board_size + 1),
+            [[self.wave_img] * (self.board_size + 1)] * (self.board_size + 1),
             dtype=str
         )
         for i in range(self.board_size + 1):
@@ -58,15 +63,14 @@ class Board:
             [1 <= dots[0] <= self.board_size, 1 <= dots[1] <= self.board_size]
         )
 
-    def ship_contour(self, ship: Ship, visible: bool = True):
+    def ship_contour(self, ship: Ship, visible: bool = False):
         near = [(_, __) for _ in range(-1, 2) for __ in range(-1, 2)]
         for dot in ship.dots:
             for dot_l, dot_n in near:
                 current = dot[0] + dot_l, dot[1] + dot_n
                 if not self.dot_out(current) and current not in self.dots_busy:
                     if visible:
-                        self.board[current[0]][current[1]] = \
-                            BColors.OKGREEN + chr(8226) + BColors.ENDC
+                        self.board[current[0]][current[1]] = self.contour_img
                     self.dots_busy.append(current)
 
     def add_ship(self, ship: Ship):
@@ -74,8 +78,7 @@ class Board:
             if any([self.dot_out(dot), dot in self.dots_busy]):
                 raise BoardWrongShipException()
         for dot in ship.dots:
-            self.board[dot[0]][dot[1]] = \
-                BColors.HEADER + chr(9632) + BColors.ENDC
+            self.board[dot[0]][dot[1]] = self.ship_img
             self.dots_busy.append(dot)
         self.ships.append(ship)
         self.ship_contour(ship)
@@ -89,7 +92,7 @@ class Board:
         for ship in self.ships:
             if ship.shooting(dot):
                 ship.live -= 1
-                self.board[dot[0]][dot[1]] = BColors.FAIL + 'x' + BColors.ENDC
+                self.board[dot[0]][dot[1]] = self.damage_img
                 if not ship.live:
                     self.count += 1
                     self.ship_contour(ship, True)
@@ -98,7 +101,7 @@ class Board:
                 else:
                     print(f'{BColors.FAIL}Корабль поврежден!{BColors.ENDC}')
                     return True
-        self.board[dot[0]][dot[1]] = BColors.WARNING + '*' + BColors.ENDC
+        self.board[dot[0]][dot[1]] = self.shoot_img
         print(f'{BColors.OKGREEN}Промах!{BColors.ENDC}')
         return False
 
@@ -183,9 +186,99 @@ class User(Player):
             return cords
 
 
-if __name__ == '__main__':
-    s1 = Ship(2, (3, 3), 1, 2)
+class Game:
+    def __init__(self, size=6):
+        self.size = size
+        player = self.random_board()
+        computer = self.random_board()
+        computer.hidden = True
 
-    b = Board()
-    b.ship_contour(s1)
-    print(b)
+        self.ai = AI(computer, player)
+        self.us = User(player, computer)
+
+    def try_board(self):
+        ship_lens = [3, 2, 2, 2, 1, 1, 1]
+        board = Board(size=self.size)
+        attempts = 0
+        for len_ship in ship_lens:
+            while True:
+                attempts += 1
+                if attempts > 2000:
+                    return None
+                ship = Ship(
+                    len_ship,
+                    (randint(1, self.size), (randint(1, self.size))),
+                    randint(0, 1),
+                    len_ship
+                )
+                try:
+                    board.add_ship(ship)
+                    break
+                except BoardWrongShipException:
+                    pass
+        board.init_game()
+        return board
+
+    def random_board(self):
+        board = None
+        while board is None:
+            board = self.try_board()
+        return board
+
+    def print_boards(self, hidden):
+        result = f'\n{BColors.OKGREEN}' \
+                 f'   Игрок:\t\t\t\t\t   Компьютер:' \
+                 f'{BColors.ENDC}'
+        for i in range(self.size + 1):
+            result += '\n'
+            for j in range(self.size + 1):
+                result += self.us.my_board.board[i][j] + '  '
+            result += '\t|\t'
+            for k in range(self.size + 1):
+                if hidden:
+                    comp_board = np.where(
+                        self.ai.my_board.board == self.ai.my_board.ship_img,
+                        self.ai.my_board.wave_img,
+                        self.ai.my_board.board
+                    )
+                    result += comp_board[i][k] + '  '
+                else:
+                    result += self.ai.my_board.board[i][k] + '  '
+        print(result)
+
+    @staticmethod
+    def greet():
+        print(f'{BColors.OKCYAN}Hi! Welcome to battleship!{BColors.ENDC}')
+        pass
+
+    def begin_game(self):
+        self.greet()
+        num = 0
+        while True:
+            self.print_boards(hidden=True)
+
+            if num % 2:
+                print(f'{BColors.WARNING}Ход игрока...{BColors.ENDC}')
+                repeat = self.us.move()
+            else:
+                print(f'{BColors.WARNING}Ход компьютера...{BColors.ENDC}')
+                repeat = self.ai.move()
+            if repeat:
+                num -= 1
+
+            if self.ai.my_board.count == 7:
+                print(f'{BColors.OKGREEN}Победил игрок!{BColors.ENDC}')
+                self.print_boards(hidden=False)
+                break
+
+            if self.ai.my_board.count == 7:
+                self.print_boards(hidden=False)
+                print(f'{BColors.FAIL}Победил компьютер!{BColors.ENDC}')
+                break
+            num += 1
+
+
+if __name__ == '__main__':
+
+    game = Game()
+    game.begin_game()
