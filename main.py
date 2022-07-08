@@ -248,8 +248,34 @@ class Game:
 
     @staticmethod
     def greet():
-        print(f'{BColors.OKCYAN}Hi! Welcome to battleship!{BColors.ENDC}')
-        pass
+        example = f'{BColors.OKGREEN}"A1"{BColors.ENDC}'\
+                  f'{BColors.OKCYAN} или {BColors.ENDC}' \
+                  f'{BColors.OKGREEN}"e4"{BColors.ENDC}' \
+                  f'{BColors.OKCYAN}'
+        print(f'''{BColors.OKCYAN}
+*****************************************************
+*   Привет! Добро пожаловать в игру "Морской бой"   *
+*****************************************************
+*                 На экране два поля:               *
+*           одно Ваше, за второе играет ИИ          *
+*****************************************************
+*               Правила ввода хода:                 *
+*                                                   *
+*         Первый символ - латинская буква в         *
+*    пределах игрового поля (регистр не важен)      *
+*                                                   *
+*         Второй символ - арабская цифра в          *
+*              пределах игрового поля               *
+*                                                   *
+*              Например {example}               *
+*****************************************************
+*   На поле отмечено:                               *
+*   {Board.ship_img}{BColors.OKCYAN} - собственно, сам корабль\t\t\t\t\t\t*
+*   {Board.damage_img}{BColors.OKCYAN} - повреждение корабля\t\t\t\t\t\t\t*
+*   {Board.shoot_img}{BColors.OKCYAN} - клетка, куда был сделан выстрел\t\t\t\t*
+*   {Board.contour_img}{BColors.OKCYAN} - свободный контур корабля\t\t\t\t\t*
+*****************************************************      
+        {BColors.ENDC}''')
 
     def begin_game(self):
         self.greet()
