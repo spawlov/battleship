@@ -2,7 +2,7 @@ import numpy as np
 
 from colors import BColors
 from exceptions import ShipWrongPlaceException, BoardOutException, \
-    BoardUsedException, BoardWrongShipException
+    BoardUsedException, BoardWrongShipException, BoardException
 
 
 class Ship:
@@ -87,7 +87,7 @@ class Board:
         self.ships.append(ship)
         self.ship_contour(ship)
 
-    def shoot(self, dot: tuple):
+    def shoot(self, dot: tuple) -> bool:
         dot = self.cords_conv(dot, True)
         if self.dot_out(dot):
             raise BoardOutException()
@@ -120,6 +120,24 @@ class Board:
 
     def init_game(self):
         self.dots_busy = []
+
+
+class Player:
+    def __init__(self, my_board: Board, enemy_board: Board):
+        self.my_board = my_board
+        self.en_board = enemy_board
+
+    def ask(self):
+        raise NotImplementedError()
+
+    def move(self):
+        while True:
+            try:
+                target = self.ask()
+                repeat = self.en_board.shoot(target)
+                return repeat
+            except BoardException as e:
+                print(e)
 
 
 if __name__ == '__main__':
