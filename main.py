@@ -156,6 +156,21 @@ class AI(Player):
                 (i + 1, j) not in self.en_board.dots_busy
             ]):
                 self.cords = [i + 1, j]
+            elif all([
+                i + 1 > 6,
+                (i + 1, j) not in self.en_board.dots_busy
+            ]):
+                self.cords = [i - 1, j]
+            elif all([
+                j + 1 <= 6,
+                (i, j + 1) not in self.en_board.dots_busy
+            ]):
+                self.cords = [i, j + 1]
+            elif all([
+                j + 1 > 6,
+                (i, j - 1) not in self.en_board.dots_busy
+            ]):
+                self.cords = [i, j - 1]
 
         while tuple(self.cords) in self.en_board.dots_busy:
 
