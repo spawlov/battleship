@@ -228,12 +228,13 @@ class User(Player):
 
 
 class Game:
-    def __init__(self, size=6):
+    def __init__(self, bsize=6):
 
-        if 9 < size < 6:
+        if any([bsize < 6, bsize > 9]):
             self.size = 6
         else:
-            self.size = size
+            self.size = bsize
+        print(self.size)
 
         player = self.random_board
         computer = self.random_board
