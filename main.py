@@ -142,27 +142,33 @@ class AI(Player):
 
     @property
     def ask(self):
+
         if self.cords is None:
             self.cords = [
                 randint(1, self.my_board.board_size),
                 randint(1, self.my_board.board_size)
             ]
         i, j = self.cords
+
         if self.en_board.board[i][j] == self.my_board.damage_img:
             if all([
                 i + 1 <= 6,
                 (i + 1, j) not in self.en_board.dots_busy
             ]):
                 self.cords = [i + 1, j]
+
         while tuple(self.cords) in self.en_board.dots_busy:
+
             if self.cords[1] < 6:
                 self.cords[1] += 1
             else:
                 self.cords[1] = 1
                 self.cords[0] += 1
+
             if self.cords[0] > 6:
                 self.cords[0] = 1
                 self.cords[1] = 1
+
         print(f'{BColors.OKCYAN}'
               f'Ход компьютера: {chr(self.cords[0] + 64)}{self.cords[1]}'
               f'{BColors.ENDC}'
