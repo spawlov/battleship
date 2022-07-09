@@ -138,14 +138,31 @@ class Player:
 
 
 class AI(Player):
+    cords = [1, 1]
+
     @property
     def ask(self):
-        cords = (randint(1, 6), randint(1, 6))
+        i, j = self.cords
+        if self.en_board.board[i][j] == self.my_board.damage_img:
+            if all([
+                i + 1 <= 6,
+                (i + 1, j) not in self.en_board.dots_busy
+            ]):
+                self.cords = [i + 1, j]
+        while tuple(self.cords) in self.en_board.dots_busy:
+            if self.cords[1] < 6:
+                self.cords[1] += 1
+            else:
+                self.cords[1] = 1
+                self.cords[0] += 1
+            if self.cords[0] > 6:
+                self.cords[0] = 1
+                self.cords[1] = 1
         print(f'{BColors.OKCYAN}'
-              f'Ход компьютера: {chr(cords[0] + 64)}{cords[1]}'
+              f'Ход компьютера: {chr(self.cords[0] + 64)}{self.cords[1]}'
               f'{BColors.ENDC}'
               )
-        return cords
+        return tuple(self.cords)
 
 
 class User(Player):
@@ -202,7 +219,7 @@ class Game:
 
     @property
     def try_board(self):
-        ship_lens = [3, 2, 2, 2, 1, 1, 1]
+        ship_lens = [3, 3, 2, 2, 1, 1, 1]
         board = Board(size=self.size)
         attempts = 0
         for len_ship in ship_lens:
@@ -254,7 +271,7 @@ class Game:
 
     @staticmethod
     def greet():
-        example = f'{BColors.OKGREEN}"A1"{BColors.ENDC}'\
+        example = f'{BColors.OKGREEN}"A1"{BColors.ENDC}' \
                   f'{BColors.OKCYAN} или {BColors.ENDC}' \
                   f'{BColors.OKGREEN}"e4"{BColors.ENDC}' \
                   f'{BColors.OKCYAN}'
@@ -303,7 +320,7 @@ class Game:
                 self.print_boards(hidden=False)
                 break
 
-            if self.ai.my_board.count == 7:
+            if self.us.my_board.count == 7:
                 self.print_boards(hidden=False)
                 print(f'{BColors.FAIL}Победил компьютер!{BColors.ENDC}')
                 break
@@ -311,6 +328,5 @@ class Game:
 
 
 if __name__ == '__main__':
-
     game = Game()
     game.begin_game()
