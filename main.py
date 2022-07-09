@@ -138,10 +138,15 @@ class Player:
 
 
 class AI(Player):
-    cords = [1, 1]
+    cords = None
 
     @property
     def ask(self):
+        if self.cords is None:
+            self.cords = [
+                randint(1, self.my_board.board_size),
+                randint(1, self.my_board.board_size)
+            ]
         i, j = self.cords
         if self.en_board.board[i][j] == self.my_board.damage_img:
             if all([
