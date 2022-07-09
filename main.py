@@ -234,7 +234,6 @@ class Game:
             self.size = 6
         else:
             self.size = bsize
-        print(self.size)
 
         player = self.random_board
         computer = self.random_board
@@ -243,11 +242,9 @@ class Game:
         self.ai = AI(computer, player)
         self.us = User(player, computer)
 
-        self.ship_lens = [3, 3, 2, 2, 1, 1, 1]
-        self.count_range = 7
-
     @property
     def try_board(self):
+
         if self.size == 6:
             self.ship_lens = [3, 3, 2, 2, 1, 1, 1]
             self.count_range = 7
@@ -260,6 +257,9 @@ class Game:
         elif self.size == 9:
             self.ship_lens = [4, 3, 3, 3, 2, 2, 2, 1, 1, 1]
             self.count_range = 10
+        else:
+            self.ship_lens = [3, 3, 2, 2, 1, 1, 1]
+            self.count_range = 7
 
         board = Board(size=self.size)
         attempts = 0
