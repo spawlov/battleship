@@ -173,16 +173,10 @@ class AI(Player):
                 self.cords = [i, j - 1]
 
         while tuple(self.cords) in self.en_board.dots_busy:
-
-            if self.cords[1] < 6:
-                self.cords[1] += 1
-            else:
-                self.cords[1] = 1
-                self.cords[0] += 1
-
-            if self.cords[0] > 6:
-                self.cords[0] = 1
-                self.cords[1] = 1
+            self.cords = [
+                randint(1, self.my_board.board_size),
+                randint(1, self.my_board.board_size)
+            ]
 
         print(f'{BColors.OKCYAN}'
               f'Ход компьютера: {chr(self.cords[0] + 64)}{self.cords[1]}'
