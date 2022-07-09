@@ -229,7 +229,12 @@ class User(Player):
 
 class Game:
     def __init__(self, size=6):
-        self.size = size
+
+        if 9 < size < 6:
+            self.size = 6
+        else:
+            self.size = size
+
         player = self.random_board
         computer = self.random_board
         computer.hidden = True
@@ -237,12 +242,27 @@ class Game:
         self.ai = AI(computer, player)
         self.us = User(player, computer)
 
+        self.ship_lens = [3, 3, 2, 2, 1, 1, 1]
+        self.count_range = 7
+
     @property
     def try_board(self):
-        ship_lens = [3, 3, 2, 2, 1, 1, 1]
+        if self.size == 6:
+            self.ship_lens = [3, 3, 2, 2, 1, 1, 1]
+            self.count_range = 7
+        elif self.size == 7:
+            self.ship_lens = [3, 3, 2, 2, 2, 1, 1, 1]
+            self.count_range = 8
+        elif self.size == 8:
+            self.ship_lens = [3, 3, 3, 2, 2, 2, 1, 1, 1]
+            self.count_range = 8
+        elif self.size == 9:
+            self.ship_lens = [4, 3, 3, 3, 2, 2, 2, 1, 1, 1]
+            self.count_range = 8
+
         board = Board(size=self.size)
         attempts = 0
-        for len_ship in ship_lens:
+        for len_ship in self.ship_lens:
             while True:
                 attempts += 1
                 if attempts > 2000:
@@ -335,12 +355,12 @@ class Game:
             if repeat:
                 num -= 1
 
-            if self.ai.my_board.count == 7:
+            if self.ai.my_board.count == self.count_range:
                 print(f'{BColors.OKGREEN}Победил игрок!{BColors.ENDC}')
                 self.print_boards(hidden=False)
                 break
 
-            if self.us.my_board.count == 7:
+            if self.us.my_board.count == self.count_range:
                 self.print_boards(hidden=False)
                 print(f'{BColors.FAIL}Победил компьютер!{BColors.ENDC}')
                 break
