@@ -369,5 +369,5 @@ class Game:
 
 
 if __name__ == '__main__':
-    game = Game(8)
+    game = Game()
     game.begin_game()
