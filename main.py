@@ -256,10 +256,10 @@ class Game:
             self.count_range = 8
         elif self.size == 8:
             self.ship_lens = [3, 3, 3, 2, 2, 2, 1, 1, 1]
-            self.count_range = 8
+            self.count_range = 9
         elif self.size == 9:
             self.ship_lens = [4, 3, 3, 3, 2, 2, 2, 1, 1, 1]
-            self.count_range = 8
+            self.count_range = 10
 
         board = Board(size=self.size)
         attempts = 0
@@ -369,5 +369,5 @@ class Game:
 
 
 if __name__ == '__main__':
-    game = Game()
+    game = Game(8)
     game.begin_game()
