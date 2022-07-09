@@ -232,8 +232,22 @@ class Game:
 
         if any([bsize < 6, bsize > 9]):
             self.size = 6
+            self.ship_lens = [3, 3, 2, 2, 1, 1, 1]
+            self.count_range = 7
         else:
             self.size = bsize
+            if self.size == 6:
+                self.ship_lens = [3, 3, 2, 2, 1, 1, 1]
+                self.count_range = 7
+            elif self.size == 7:
+                self.ship_lens = [3, 3, 2, 2, 2, 1, 1, 1]
+                self.count_range = 8
+            elif self.size == 8:
+                self.ship_lens = [3, 3, 3, 2, 2, 2, 1, 1, 1]
+                self.count_range = 9
+            elif self.size == 9:
+                self.ship_lens = [4, 3, 3, 3, 2, 2, 2, 1, 1, 1]
+                self.count_range = 10
 
         player = self.random_board
         computer = self.random_board
@@ -244,20 +258,6 @@ class Game:
 
     @property
     def try_board(self):
-
-        if self.size == 6:
-            self.ship_lens = [3, 3, 2, 2, 1, 1, 1]
-            self.count_range = 7
-        elif self.size == 7:
-            self.ship_lens = [3, 3, 2, 2, 2, 1, 1, 1]
-            self.count_range = 8
-        elif self.size == 8:
-            self.ship_lens = [3, 3, 3, 2, 2, 2, 1, 1, 1]
-            self.count_range = 9
-        elif self.size == 9:
-            self.ship_lens = [4, 3, 3, 3, 2, 2, 2, 1, 1, 1]
-            self.count_range = 10
-
         board = Board(size=self.size)
         attempts = 0
         for len_ship in self.ship_lens:
@@ -366,5 +366,5 @@ class Game:
 
 
 if __name__ == '__main__':
-    game = Game()
+    game = Game(10)
     game.begin_game()
