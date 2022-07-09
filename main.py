@@ -257,9 +257,6 @@ class Game:
         elif self.size == 9:
             self.ship_lens = [4, 3, 3, 3, 2, 2, 2, 1, 1, 1]
             self.count_range = 10
-        else:
-            self.ship_lens = [3, 3, 2, 2, 1, 1, 1]
-            self.count_range = 7
 
         board = Board(size=self.size)
         attempts = 0
