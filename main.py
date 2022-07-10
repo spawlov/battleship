@@ -354,8 +354,8 @@ class Game:
                 num -= 1
 
             if self.ai.my_board.count == self.count_range:
-                print(f'{BColors.OKGREEN}Победил игрок!{BColors.ENDC}')
                 self.print_boards(hidden=False)
+                print(f'{BColors.OKGREEN}Победил игрок!{BColors.ENDC}')
                 break
 
             if self.us.my_board.count == self.count_range:
