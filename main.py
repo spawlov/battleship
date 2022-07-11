@@ -144,10 +144,7 @@ class AI(Player):
     def ask(self):
 
         if self.cords is None:
-            self.cords = [
-                randint(1, self.my_board.board_size),
-                randint(1, self.my_board.board_size)
-            ]
+            self.cords = self.random_cord
         i, j = self.cords
 
         if self.en_board.board[i][j] == self.my_board.damage_img:
@@ -173,16 +170,18 @@ class AI(Player):
                 self.cords = [i, j - 1]
 
         while tuple(self.cords) in self.en_board.dots_busy:
-            self.cords = [
-                randint(1, self.my_board.board_size),
-                randint(1, self.my_board.board_size)
-            ]
+            self.cords = self.random_cord
 
         print(f'{BColors.OKCYAN}'
               f'Ход компьютера: {chr(self.cords[0] + 64)}{self.cords[1]}'
               f'{BColors.ENDC}'
               )
         return tuple(self.cords)
+
+    @property
+    def random_cord(self):
+        return [randint(1, self.my_board.board_size),
+                randint(1, self.my_board.board_size)]
 
 
 class User(Player):
