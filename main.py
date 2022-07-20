@@ -4,7 +4,7 @@ import numpy as np
 
 from colors import BColors
 from exceptions import ShipWrongPlaceException, BoardOutException, \
-    BoardUsedException, BoardWrongShipException, BoardException
+    BoardUserException, BoardWrongShipException, BoardException
 
 
 class Ship:
@@ -87,7 +87,7 @@ class Board:
         if self.dot_out(dot):
             raise BoardOutException()
         if dot in self.dots_busy:
-            raise BoardUsedException()
+            raise BoardUserException()
         self.dots_busy.append(dot)
         for ship in self.ships:
             if ship.shooting(dot):

@@ -10,7 +10,7 @@ class BoardOutException(BoardException):
         return f'{BColors.FAIL}Выстрел за пределы игрового поля!{BColors.ENDC}'
 
 
-class BoardUsedException(BoardException):
+class BoardUserException(BoardException):
     def __str__(self):
         return f'{BColors.FAIL}' \
                f'Говорят снаряд два раза в одну воронку не попадает...' \
