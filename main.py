@@ -149,22 +149,22 @@ class AI(Player):
 
         if self.en_board.board[i][j] == self.my_board.damage_img:
             if all([
-                i + 1 <= 6,
+                i + 1 <= self.my_board.board_size,
                 (i + 1, j) not in self.en_board.dots_busy
             ]):
                 self.cords = [i + 1, j]
             elif all([
-                i + 1 > 6,
+                i + 1 > self.my_board.board_size,
                 (i + 1, j) not in self.en_board.dots_busy
             ]):
                 self.cords = [i - 1, j]
             elif all([
-                j + 1 <= 6,
+                j + 1 <= self.my_board.board_size,
                 (i, j + 1) not in self.en_board.dots_busy
             ]):
                 self.cords = [i, j + 1]
             elif all([
-                j + 1 > 6,
+                j + 1 > self.my_board.board_size,
                 (i, j - 1) not in self.en_board.dots_busy
             ]):
                 self.cords = [i, j - 1]
@@ -365,5 +365,5 @@ class Game:
 
 
 if __name__ == '__main__':
-    game = Game()
+    game = Game(9)
     game.begin_game()
